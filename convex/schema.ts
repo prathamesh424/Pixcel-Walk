@@ -37,6 +37,7 @@ export default defineSchema({
       y_coordinate: v.number(),
       present_map_id: v.optional(v.id("maps")),
       img_url: v.string(),
-    }).index("player_mail", ["player_mail"]),
+    }).index("player_mail", ["player_mail"]) 
+    .index("present_map_id" , ["present_map_id"])
   });
  

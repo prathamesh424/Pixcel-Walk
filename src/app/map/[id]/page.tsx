@@ -1,77 +1,75 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { useParams } from "next/navigation"; // This is the hook to access route params
 import { api } from "../../../../convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
 import { useSession } from "@clerk/clerk-react";
 
-// Define types for the map and player
 interface Map {
   map_name: string;
   dimensions: { width: number; height: number };
 }
 
 interface Player {
-  player_id: string; // This should match the correct field name from your data schema
+  player_id: string;
   player_mail: string;
   x_coordinate: number;
   y_coordinate: number;
 }
 
 export default function MapPage() {
-  const router = useRouter();
-  const { mapId } = router.query; // Extract mapId from the URL query
-  const [map, setMap] = useState<Map | null>(null); // Initialize map state
-  const [players, setPlayers] = useState<Player[]>([]); // Initialize players state
-  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null); // Initialize selected player state
+   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
 
   const { session } = useSession();
-
   const email = session?.user?.emailAddresses[0]?.emailAddress || "";
 
   const movePlayer = useMutation(api.players.movePlayer);
-  const mapData = useQuery(api.maps.getMap, { map_name: mapId as string });
-  const playersData  = useQuery(api.players.getPlayerLocation, { player_mail: email });
+  const map = useQuery(api.maps.getMap, { map_name: "" });
+  const players = useQuery(api.players.getAllPlayersLocation, { map_name: "lala" });
 
-  useEffect(() => {
-    if (mapId) {
-      if (mapData) {
-        setMap(mapData);
-      }
-      if (playersData) {
-        setPlayers(playersData);
-      }
+  const { id: mapId } = useParams(); // Get the dynamic route parameter (mapId)
+     
+
+  const handlePlayerMove = async (direction: string) => {
+    if (!selectedPlayer || !email) return;
+
+    let newX = selectedPlayer.x_coordinate;
+    let newY = selectedPlayer.y_coordinate;
+
+    switch (direction) {
+      case "right":
+        newX = selectedPlayer.x_coordinate + 1;
+        break;
+      case "left":
+        newX = selectedPlayer.x_coordinate - 1;
+        break;
+      case "down":
+        newY = selectedPlayer.y_coordinate + 1;
+        break;
+      case "up":
+        newY = selectedPlayer.y_coordinate - 1;
+        break;
+      default:
+        break;
     }
-  }, [mapId, mapData, playersData]);
 
-  // Function to move a player on the map
-  const handlePlayerMove = async (playerId: string, newX: number, newY: number) => {
     try {
-      await movePlayer({ }); // Call API to move player
-
-      setPlayers((prevPlayers) =>
-        prevPlayers.map((player) =>
-          player.player_id === playerId
-            ? { ...player, x_coordinate: newX, y_coordinate: newY }
-            : player
-        )
-      );
+      await movePlayer({
+        player_mail: email,
+        direction,
+      });
     } catch (error) {
       console.error("Error moving player:", error);
     }
   };
 
-  if (!mapData || !playersData) {
+  if (!map || !players) {
     return (
       <div className="min-h-screen flex justify-center items-center bg-gray-800 text-white">
         <div>Loading map...</div>
       </div>
     );
-  }
-
-  if (!map) {
-    return <div>No map found</div>;
   }
 
   return (
@@ -87,13 +85,13 @@ export default function MapPage() {
         >
           {players.map((player) => (
             <div
-              key={player.player_id} // Use unique player ID as key
+              key={player.player_id}
               className="absolute bg-blue-500 p-2 rounded-full cursor-pointer"
               style={{
                 left: `${player.x_coordinate}px`,
                 top: `${player.y_coordinate}px`,
               }}
-              onClick={() => setSelectedPlayer(player)} // Set selected player on click
+              onClick={() => setSelectedPlayer(player)}
             >
               {player.player_mail}
             </div>
@@ -106,49 +104,25 @@ export default function MapPage() {
             <div className="flex space-x-4">
               <button
                 className="px-4 py-2 bg-blue-600 rounded"
-                onClick={() =>
-                  handlePlayerMove(
-                    selectedPlayer.player_id,
-                    selectedPlayer.x_coordinate + 10,
-                    selectedPlayer.y_coordinate
-                  )
-                }
+                onClick={() => handlePlayerMove("right")}
               >
                 Move Right
               </button>
               <button
                 className="px-4 py-2 bg-blue-600 rounded"
-                onClick={() =>
-                  handlePlayerMove(
-                    selectedPlayer.player_id,
-                    selectedPlayer.x_coordinate - 10,
-                    selectedPlayer.y_coordinate
-                  )
-                }
+                onClick={() => handlePlayerMove("left")}
               >
                 Move Left
               </button>
               <button
                 className="px-4 py-2 bg-blue-600 rounded"
-                onClick={() =>
-                  handlePlayerMove(
-                    selectedPlayer.player_id,
-                    selectedPlayer.x_coordinate,
-                    selectedPlayer.y_coordinate + 10
-                  )
-                }
+                onClick={() => handlePlayerMove("down")}
               >
                 Move Down
               </button>
               <button
                 className="px-4 py-2 bg-blue-600 rounded"
-                onClick={() =>
-                  handlePlayerMove(
-                    selectedPlayer.player_id,
-                    selectedPlayer.x_coordinate,
-                    selectedPlayer.y_coordinate - 10
-                  )
-                }
+                onClick={() => handlePlayerMove("up")}
               >
                 Move Up
               </button>

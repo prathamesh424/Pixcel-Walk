@@ -118,3 +118,32 @@ export const createPlayer = mutation({
     },
   });
   
+  export const getAllPlayersLocation = query({
+    args: {
+      map_name: v.string(),  // The name of the map
+    },
+    handler: async ({ db }, { map_name }) => {
+      // Query to find the map by name to get its ID (assuming you have a "maps" collection)
+      const map = await db.query("maps")
+        .withIndex("map_name", (q) => q.eq("map_name", map_name))
+        .first();
+  
+      if (!map) {
+        throw new Error("Map not found");
+      }
+  
+      // Fetch all players that are associated with the map's ID
+      const players = await db.query("players")
+        .withIndex("present_map_id", (q) => q.eq("present_map_id", map._id))
+        .collect();
+  
+      // Return players' data
+      return players.map((player) => ({
+        player_id: player._id,
+        player_mail: player.player_mail,
+        x_coordinate: player.x_coordinate,
+        y_coordinate: player.y_coordinate,
+        img_url: player.img_url,
+      }));
+    },
+  });
