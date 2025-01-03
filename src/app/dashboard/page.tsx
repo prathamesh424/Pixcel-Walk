@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";  // Directly use useRouter
+import { useRouter } from "next/navigation";  // Directly use useRouter
 import { api } from "../../../convex/_generated/api";
 import { useQuery } from "convex/react";
-import { redirect } from "next/navigation";
 
 // Define the interface for Map
 interface Map {
@@ -18,7 +17,7 @@ interface Map {
 }
 
 export default function Dashboard() {
-    const router = useRouter();
+  const router = useRouter();
   const [maps, setMaps] = useState<Map[]>([]);
   const [loading, setLoading] = useState(true);
  // Directly use useRouter here
@@ -34,9 +33,9 @@ export default function Dashboard() {
   }, [mapsData]);
 
   const handleMapClick = (mapId: string) => {
-    // Navigate to the map page
-    // redirect(`/map/${mapId}`) ;
-    router.push(`/map/${mapId}`);
+    if (mapId)  {
+      router.push(`/map/${mapId}`);
+    }
   };
 
   if (loading) {

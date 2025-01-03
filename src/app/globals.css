@@ -66,59 +66,53 @@
     }
   }
 
-  @layer base {
-    * {
-      @apply border-border;
-    }
-    body {
-      @apply bg-background text-foreground;
-    }
-    h1 {
-      @apply text-2xl;
-    }
-    h2 {
-      @apply mt-8 text-lg;
-    }
-    hr {
-      @apply my-4 bg-primary;
-    }
-    span.delete-button {
-      @apply cursor-pointer;
-    }
-    span.delete-button::after {
-      content: "🗑️";
-    }
-    button {
-      @apply mr-1 mt-1;
-    }
-    input {
-      @apply inline-block;
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
+  .font-pixel {
+    font-family: 'Press Start 2P', cursive;
+  }
+  
+  @keyframes glow {
+    0%, 100% {
+      text-shadow: 0 0 10px rgba(16, 185, 129, 0.5),
+                   0 0 20px rgba(16, 185, 129, 0.3),
+                   0 0 30px rgba(16, 185, 129, 0.2);
     }
-    form {
-      @apply flex flex-col;
+    50% {
+      text-shadow: 0 0 20px rgba(16, 185, 129, 0.7),
+                   0 0 30px rgba(16, 185, 129, 0.5),
+                   0 0 40px rgba(16, 185, 129, 0.3);
     }
-    form > div {
-      @apply mb-2;
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
     }
-    form.edit-fields-form {
-      @apply flex-row;
-      div {
-        @apply flex mr-1;
-      }
+    50% {
+      transform: translateY(-5px);
     }
-    form button, input, select {
-      @apply self-start;
-    }
-    
-    form input, select, label {
-      @apply min-w-80;
-    }
-    
-    form label {
-      @apply inline-block;
-    }
-    div.public-form-field {
-      @apply my-2;
-    }
-}
+  }
+  
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite;
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  /* Ensure the page takes up full height */
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: black;
+  }
+  
+  

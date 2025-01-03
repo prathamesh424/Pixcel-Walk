@@ -5,8 +5,8 @@ import UserForms from "./UserForms";
 
 export default function Home() {
   
-  return ( <>
-      
+  return ( 
+  <>
     <Unauthenticated>
       <div className="grid place-content-center h-lvh text-2xl">Welcome to Informal. Sign in to start creating forms.</div>
     </Unauthenticated>

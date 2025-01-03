@@ -147,3 +147,23 @@ export const createPlayer = mutation({
       }));
     },
   });
+
+
+  export const updatePlayerMap = mutation({
+    args: {
+      player_mail: v.string(),
+      map_id : v.id("maps"),
+    },
+    handler: async ({ db }, { player_mail, map_id }) => {
+      const player = await db.query("players") 
+           .withIndex("player_mail", q => q.eq("player_mail", player_mail))
+           .first();
+      
+      if (!player) {
+        throw new Error("Player not found");
+      }
+        await db.patch(player._id, {
+        present_map_id: map_id,
+      });
+    }
+  })
