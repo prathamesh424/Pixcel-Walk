@@ -14,9 +14,6 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as forms from "../forms.js";
-import type * as form_fields from "../form_fields.js";
-import type * as form_responses from "../form_responses.js";
 import type * as http from "../http.js";
 import type * as maps from "../maps.js";
 import type * as players from "../players.js";
@@ -30,9 +27,6 @@ import type * as players from "../players.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  forms: typeof forms;
-  form_fields: typeof form_fields;
-  form_responses: typeof form_responses;
   http: typeof http;
   maps: typeof maps;
   players: typeof players;

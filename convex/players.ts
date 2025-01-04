@@ -20,8 +20,8 @@ export const createPlayer = mutation({
        .first();
       
       if(findUser){
-        throw new Error('Player with this email already exists');
-        
+        console.log('Player with this email already exists');
+        return findUser ;
       }
       return await db.insert("players", {
         player_mail,
@@ -173,6 +173,8 @@ export const createPlayer = mutation({
       }
         await db.patch(player._id, {
         present_map_id: map_id,
+        x_coordinate: 0,
+        y_coordinate: 0
       });
     }
   })
