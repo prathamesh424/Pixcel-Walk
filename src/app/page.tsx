@@ -1,17 +1,24 @@
 "use client";
-import { SignInButton, UserButton } from "@clerk/clerk-react";
-import { Authenticated, Unauthenticated, useQuery } from "convex/react";
-import UserForms from "./UserForms";
+ import { Authenticated, Unauthenticated } from "convex/react";
+import dynamic from "next/dynamic";
+
+// Dynamically import components for better performance
+const Dashboard = dynamic(() => import("./dashboard/page"));
+const MapPage = dynamic(() => import("./map/[id]/page"));
 
 export default function Home() {
-  
-  return ( 
-  <>
-    <Unauthenticated>
-      <div className="grid place-content-center h-lvh text-2xl">Welcome to Informal. Sign in to start creating forms.</div>
-    </Unauthenticated>
-    <Authenticated>
-    <UserForms />
-    </Authenticated>
-  </>);
+  return (
+    <>
+      <Unauthenticated>
+        <div className="grid place-content-center h-screen text-2xl text-center">
+           <div className="mt-4">
+           </div>
+        </div>
+      </Unauthenticated>
+      <Authenticated>
+        <MapPage />
+        <Dashboard />
+      </Authenticated>
+    </>
+  );
 }

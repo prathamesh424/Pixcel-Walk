@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import ConvexClientProvider from "./ConvexClientProvider";
-import { ClerkProvider, useAuth } from "@clerk/clerk-react";
+import {  useAuth } from "@clerk/clerk-react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 
 import "./globals.css";
@@ -26,7 +26,7 @@ export default function RootLayout({
         <link rel="icon" href="https://zany.sh/favicon.svg?emoji=📋"></link>
       </head>
       <body className={inter.className}>
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen  text-white">
         <ConvexClientProvider>
         <Header />
         <main className="container flex-grow mx-auto m-2">
@@ -38,5 +38,6 @@ export default function RootLayout({
         </div>
         </body>
     </html>
+
   );
 }

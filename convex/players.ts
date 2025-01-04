@@ -14,6 +14,15 @@ export const createPlayer = mutation({
       { db },
       { player_mail, x_coordinate, y_coordinate, present_map_id, img_url }
     ) => {
+
+      const findUser = await db.query("players")
+       .withIndex("player_mail", q => q.eq("player_mail", player_mail)) 
+       .first();
+      
+      if(findUser){
+        throw new Error('Player with this email already exists');
+        
+      }
       return await db.insert("players", {
         player_mail,
         x_coordinate,
