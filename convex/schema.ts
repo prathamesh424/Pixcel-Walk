@@ -17,6 +17,12 @@ export default defineSchema({
       present_map_id: v.optional(v.id("maps")),
       img_url: v.string(),
     }).index("player_mail", ["player_mail"]) 
-    .index("present_map_id" , ["present_map_id"])
+    .index("present_map_id" , ["present_map_id"]) ,
+
+    chat: defineTable({
+      sender: v.id("players"),
+      receiver: v.id("players"),
+      messages: v.array(v.string()),
+    }).index("sender_receiver", ["sender" , "receiver"]),
   });
  

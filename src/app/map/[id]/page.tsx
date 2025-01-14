@@ -6,6 +6,8 @@ import { api } from "../../../../convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
 import { useSession } from "@clerk/clerk-react";
 import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Loader2, MapPin } from 'lucide-react';
+import ChatInterface from '../../../components/ChatInterface';
+import { Id } from "../../../../convex/_generated/dataModel";
 
 interface Map {
   map_name: string;
@@ -45,6 +47,7 @@ export default function MapPage() {
   const currentPlayer = useQuery(api.players.getPlayerLocation, { player_mail: email });
   const movePlayer = useMutation(api.players.movePlayer);
   const players = useQuery(api.players.getAllPlayersLocation, { map_name: mapId as string });
+  const nearbyPlayers = useQuery(api.maps.nearPlayer, { map_name: mapId as string , player_mail: email });
 
   if (!email) {
     return (
@@ -173,6 +176,14 @@ export default function MapPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Add ChatInterface */}
+      {currentPlayer && nearbyPlayers && (
+        <ChatInterface
+          nearbyPlayers={nearbyPlayers}
+          currentPlayer={currentPlayer}
+        />
       )}
     </div>
   );

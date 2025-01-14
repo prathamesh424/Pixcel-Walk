@@ -73,6 +73,7 @@ export const createPlayer = mutation({
       return {
         x_coordinate: player.x_coordinate,
         y_coordinate: player.y_coordinate,
+        player_Id : player._id,
       };
     },
   });
