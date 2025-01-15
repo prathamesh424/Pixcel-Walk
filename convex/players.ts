@@ -33,8 +33,6 @@ export const createPlayer = mutation({
     },
   });
 
-
-
   export const updatePlayer = mutation({
     args: {
       player_id: v.id("players"),
@@ -48,8 +46,6 @@ export const createPlayer = mutation({
     },
   });
   
-  
-
   export const deletePlayer = mutation({
     args: { player_id: v.id("players") },
     handler: async ({ db }, { player_id }) => {
@@ -57,8 +53,6 @@ export const createPlayer = mutation({
     },
   });
   
-
-
   export const getPlayerLocation = query({
     args: {
       player_mail: v.string(),
@@ -77,7 +71,6 @@ export const createPlayer = mutation({
       };
     },
   });
-
   
   export const movePlayer = mutation({
     args: {
@@ -158,7 +151,6 @@ export const createPlayer = mutation({
     },
   });
 
-
   export const updatePlayerMap = mutation({
     args: {
       player_mail: v.string(),
@@ -179,3 +171,13 @@ export const createPlayer = mutation({
       });
     }
   })
+
+  export const getEmailByPlayerId = query({
+    args: {
+      player_id: v.id("players"),
+    },
+    handler: async ({ db }, { player_id }) => {
+      const player = await db.get(player_id);
+      return player?.player_mail;
+    },
+  });

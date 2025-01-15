@@ -22,7 +22,14 @@ export default defineSchema({
     chat: defineTable({
       sender: v.id("players"),
       receiver: v.id("players"),
-      messages: v.array(v.string()),
+      messages: v.array(
+        v.object({
+          sender: v.id("players"),
+          receiver: v.id("players"),
+          message: v.string(),
+          timestamp: v.number(),
+        })
+      ),
     }).index("sender_receiver", ["sender" , "receiver"]),
   });
  

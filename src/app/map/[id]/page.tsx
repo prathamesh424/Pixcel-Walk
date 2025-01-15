@@ -28,7 +28,6 @@ export default function MapPage() {
   const mapId = params.id;
   const [mapSize, setMapSize] = useState({ width: 0, height: 0 });
 
-  // Calculate map size based on screen dimensions
   useEffect(() => {
     const calculateMapSize = () => {
       const screenHeight = window.innerHeight;
@@ -101,7 +100,6 @@ export default function MapPage() {
       >
         {/* Players */}
         {players.map((player) => {
-          // Calculate position ensuring players stay within bounds
           const xPos = Math.max(blockSize/2, Math.min((blockSize * player.x_coordinate), (blockSize * width) - blockSize/2));
           const yPos = Math.max(blockSize/2, Math.min((blockSize * player.y_coordinate), (blockSize * height) - blockSize/2));
           
@@ -112,7 +110,7 @@ export default function MapPage() {
               style={{
                 left: xPos,
                 top: yPos,
-                width: blockSize * 0.8, // Slightly smaller than block size
+                width: blockSize * 0.8,
                 height: blockSize * 0.8,
               }}
             >

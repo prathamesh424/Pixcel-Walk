@@ -10,22 +10,36 @@ export const sendMessage  = mutation({
     },
 
     handler: async ({ db }, { sender, receiver, message }) => {
-         const existingChat = await db.query("chat")
+        const existingChat = await db.query("chat")
             .withIndex("sender_receiver", (q) => 
                 q.eq("sender", sender).eq("receiver", receiver)
             )
-            .first();
+            .first(); 
+
+        const timestamp = Date.now();
 
         if (existingChat) {
              return await db.patch(existingChat._id, {
-                messages: [...existingChat.messages, message]
+                messages: [...existingChat.messages, { sender, receiver, message, timestamp }]
+            });
+        }
+        
+        const anotherChat = await db.query("chat").
+            withIndex("sender_receiver", (q) => 
+                q.eq("sender", receiver).eq("receiver", sender)
+            ).
+            first();
+
+        if (anotherChat) {
+            return await db.patch(anotherChat._id, {
+                messages: [...anotherChat.messages, { sender, receiver, message, timestamp }]
             });
         }
 
         return await db.insert("chat", {
             sender,
             receiver,
-            messages: [message]
+            messages: [{ sender, receiver, message, timestamp }]
         });
     },
 })
@@ -38,11 +52,25 @@ export const getChat = query({
     },
     handler: async ({ db }, { sender, receiver }) => {
         const chat = await db.query("chat").withIndex("sender_receiver", (q) => q.eq("sender", sender).eq("receiver", receiver)).first();
-        if (!chat) {
-            return [];
+        if (chat) {
+            return chat.messages.map(msg => ({
+                sender: msg.sender,
+                receiver: msg.receiver,
+                message: msg.message,
+                timestamp: msg.timestamp
+            }))
         }
 
-        return chat?.messages || [];
+        const anotherChat = await db.query("chat").withIndex("sender_receiver", (q) => q.eq("sender", receiver).eq("receiver", sender)).first();
+        if (anotherChat) {
+            return anotherChat.messages.map(msg => ({
+                sender: msg.sender,
+                receiver: msg.receiver,
+                message: msg.message,
+                timestamp: msg.timestamp
+            }))
+        }
+        return [];
     },
 })
 

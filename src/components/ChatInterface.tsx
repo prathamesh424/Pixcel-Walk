@@ -5,6 +5,7 @@ import { Loader2, MessageCircle, X, Users } from 'lucide-react';
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import ChatWindow from './ChatWindow';
+import { format } from 'date-fns';
 
 interface ChatInterfaceProps {
   nearbyPlayers: any[];

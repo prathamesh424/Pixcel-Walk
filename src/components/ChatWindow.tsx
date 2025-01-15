@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Id } from '../../convex/_generated/dataModel';
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { X } from 'lucide-react';
+import { format } from 'date-fns';
 
 interface ChatWindowProps {
   sender: Id<"players">;
@@ -12,17 +13,16 @@ interface ChatWindowProps {
 
 const ChatWindow: React.FC<ChatWindowProps> = ({ sender, receiver, onClose }) => {
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState<{ [key: string]: string }>({});
-  
   const chatMessages = useQuery(api.chat.getChat, { sender, receiver });
   const sendMessage = useMutation(api.chat.sendMessage);
+  
+  const receiverEmail = useQuery(api.players.getEmailByPlayerId, { player_id: receiver });
 
   const handleSendMessage = async () => {
     if (!message.trim()) return;
 
     try {
       await sendMessage({ sender, receiver, message });
-      setMessages(prev => ({ ...prev, [receiver]: '' }));
       setMessage('');  
     } catch (error) {
       console.error('Error sending message:', error);
@@ -32,16 +32,16 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ sender, receiver, onClose }) =>
   return (
     <div className="bg-white/95 backdrop-blur-sm rounded-2xl border border-purple-100 shadow-lg flex flex-col h-80">
       <div className="p-3 border-b border-purple-100 flex justify-between items-center">
-        <span className="font-pixel text-purple-600">{receiver}</span>
+        <span className="font-pixel text-purple-600">{receiverEmail}</span>
         <button onClick={onClose} className="text-purple-600 hover:text-purple-700">
           <X className="w-4 h-4" />
         </button>
       </div>
       <div className="flex-1 p-3 overflow-y-auto">
         {chatMessages?.map((msg: any, idx: number) => (
-            //${msg.sender === sender ? 'bg-purple-100 ml-auto' : 'bg-gray-100'}
-          <div key={idx} className={`mb-2 p-2 rounded-lg  text-black max-w-[80%]`}>
-            {msg}
+          <div key={idx} className={`mb-2 p-2 rounded-lg text-black max-w-[80%] ${msg.sender === sender ? 'bg-purple-100 ml-auto' : 'bg-gray-100'}`}>
+            <div>{msg.message}</div>
+            <div className="text-xs text-gray-500">{format(new Date(msg.timestamp), 'HH:mm:ss')}</div>
           </div>
         )) || <div>No messages yet.</div>}
       </div>
