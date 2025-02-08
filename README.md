@@ -91,12 +91,12 @@ Now, your Convex-powered database is ready to handle real-time data updates.
 ```csharp
 pixelwalk/
 │── public/            # Static assets
+├── convex/        # Convex backend logic
 │── src/
 │   ├── components/    # Reusable UI components
-│   ├── pages/         # Next.js pages
-│   ├── hooks/         # Custom hooks
-│   ├── styles/        # Tailwind styles
-│   ├── convex/        # Convex backend logic
+│   ├── app/           # Next.js pages
+│   ├── lib/           # Custom function and utils 
+│   ├── /        # Tailwind styles
 │── .env.local         # Environment variables
 │── package.json       # Project dependencies
 │── README.md          # Project documentation
